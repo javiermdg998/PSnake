@@ -4,6 +4,7 @@ public class Snake {
     int size=15;
     char direction;
     PVector lastFood;
+    boolean cut;
     public Snake (int x, int y,char direction) {
         PVector head=new PVector(x,y);
         lastFood=new PVector(-1,-1);
@@ -27,6 +28,7 @@ public class Snake {
         */
         this.direction=direction;
         this.eating =false;
+        this.cut=false;
     
     }
 
@@ -34,6 +36,9 @@ public class Snake {
         //fill(255);
         for (int i = 0; i < body.size(); i++) {           
              fill(255);
+             if(cut){
+                 fill(255,0,0);
+             }
              if(i==0){
                  fill(0,255,0);
              }
@@ -44,7 +49,7 @@ public class Snake {
         //println("this.body.size(): "+this.body.size());
         char dir =predict(f);
     // println("size "+this.body.size());
-       this.setDirection(dir);
+      this.setDirection(dir);
        this.move(f);
         for (int i = 2; i < body.size(); i++) {
             if(isSame2(body.get(0),body.get(i))){
@@ -54,8 +59,13 @@ public class Snake {
                     body.remove(j);
                    
                 }
+                this.cut=true;
+                break;
+            }else{
+                this.cut=false;
             }
         }
+        
     }
     void setDirection(char dir){
         if((dir=='w' || dir=='s' || dir=='a' || dir=='d')){
@@ -98,8 +108,9 @@ public class Snake {
         }else if(head.y<0){
             head.y=height;
         }
-
-
+        stroke(255);
+        line(head.x,head.y,f.position.x,f.position.y);
+        noStroke();
         this.body.add(0,head);
 
         if(distance(head,f.position)==0 ){
@@ -144,7 +155,7 @@ public class Snake {
             new PVector(head.x+size,head.y)
         };
         for (PVector dir : directions) {
-            checkDirection(dir,posibles);
+            checkDirection(dir,posibles,f);
         }
         /*
         for (int i = 1; i < body.size(); i++) {
@@ -237,12 +248,16 @@ public class Snake {
         return(x==x1 && y ==y1);
     }
 
-    void checkDirection(PVector dir,ArrayList<PVector> posibles){
+    void checkDirection(PVector dir,ArrayList<PVector> posibles,Food f){
         boolean valid=true;
         for(int i =1;i< this.body.size();i++){
                 if(distance(dir,this.body.get(i))==size){
                     valid=false;    
                 }//esta estrictamente en linea recta 
+        }
+        if(distance(dir,f.position)==size || distance(dir,f.position)==sqrt(sq(size)*2)){
+                    valid=true;    
+                    println("voy a comer"+this.body.size());
         }
         if(valid){
             posibles.add(dir);
