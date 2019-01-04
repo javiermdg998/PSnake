@@ -22,8 +22,11 @@ void draw() {
 void keyPressed(){
   
   s.setDirection(key);
+  frameRate(3);
 }
-
+void keyReleased(){
+    frameRate(60);
+}
 PVector[] ordenar(PVector[] original, PVector end) {
         PVector[] ordenado = original;
 

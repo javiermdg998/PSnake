@@ -5,6 +5,7 @@ public class Snake {
     char direction;
     PVector lastFood;
     boolean cut;
+    int ln=this.body.size();
     public Snake (int x, int y,char direction) {
         PVector head=new PVector(x,y);
         lastFood=new PVector(-1,-1);
@@ -48,7 +49,8 @@ public class Snake {
     void update(Food f){
         //println("this.body.size(): "+this.body.size());
         char dir =predict(f);
-    // println("size "+this.body.size());
+    // println("size "+this.body.size())
+    println("this.size: "+this.ln);;
       this.setDirection(dir);
        this.move(f);
         for (int i = 2; i < body.size(); i++) {
@@ -109,7 +111,7 @@ public class Snake {
             head.y=height;
         }
         stroke(255);
-        line(head.x,head.y,f.position.x,f.position.y);
+    //B    line(head.x,head.y,f.position.x,f.position.y);
         noStroke();
         this.body.add(0,head);
 
@@ -210,19 +212,9 @@ public class Snake {
                 if(isSame2(nodos[0],this.body.get(1))){
                     n=1;
                 }
+                return equivalentDir(nodos[n],head);
     
-               if(isSame1(nodos[n],head.x-size,head.y)){
-                   
-                   return 'a';
-               }else if(isSame1(nodos[n],head.x+size,head.y)){
-                   
-                   return 'd';
-               }else  if(isSame1(nodos[n],head.x,head.y-size)){
-                   return 'w';
-               }else{
-                   return 's';
-                
-               }
+              
         }else{
             return this.direction;
         }
@@ -249,19 +241,34 @@ public class Snake {
     }
 
     void checkDirection(PVector dir,ArrayList<PVector> posibles,Food f){
+        PVector head=this.body.get(0);
         boolean valid=true;
         for(int i =1;i< this.body.size();i++){
                 if(distance(dir,this.body.get(i))==size){
                     valid=false;    
                 }//esta estrictamente en linea recta 
         }
-        if(distance(dir,f.position)==size || distance(dir,f.position)==sqrt(sq(size)*2)){
+        if(distance(dir,f.position)==size/* || distance(dir,f.position)==sqrt(sq(size)*2)*/){
                     valid=true;    
-                    println("voy a comer"+this.body.size());
+                    println("voy a comer"+distance(dir,f.position));
+                   // this.setDirection(equivalentDir(dir,head));
         }
         if(valid){
             posibles.add(dir);
         }
+    }
+    char equivalentDir(PVector begin, PVector end){
+            if(isSame1(begin,end.x-size,end.y)){
+               return 'a';
+            }else if(isSame1(begin,end.x+size,end.y)){   
+                return 'd';
+            }else if(isSame1(begin,end.x,end.y-size)){
+                return 'w';
+            }else if(isSame1(begin,end.x,end.y+size)){
+                return 's';
+            }else{
+                return 'u';
+            }
     }
 
      
